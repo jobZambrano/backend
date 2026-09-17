@@ -1,0 +1,39 @@
+AUTENTICACION
+url: http://localhost:5000/api/auth
+
+Datos JSON:
+{
+    "username": "valor",
+    "password": "valor"
+}
+
+REQUIERE ENVIAR EL TOKEN EN EL HEADERS DE LAS PETICIONES
+Clave: Authorization
+Valor: Bearer token 
+
+METODO GET (MULTLIPLES REGISTROS)
+url: http://localhost:5000/api/tecnicos?page=1&cadena=valor
+
+METODO GET (REGISTROS UNICOS)
+url: http://localhost:5000/api/tecnicos/ID
+
+Metodo POST
+url:http://localhost:5000/api/tecnicos
+Datos JSON:
+{
+    "usuario_tec": "",
+    "nombre_tec": "",
+    "especialidad_tec": "",
+    "telefono_tec": "",
+    "contrasenia_tec": ""
+}
+METODO PUT 
+url:http://localhost:5000/api/tecnicos/ID
+{
+    "usuario_tec": "",
+    "nombre_tec": "",
+    "especialidad_tec": "",
+    "telefono_tec": ""
+}
+METODO delete
+url:http://localhost:5000/api/tecnicos/ID
