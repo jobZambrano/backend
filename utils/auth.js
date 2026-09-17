@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 //FUNCION PARA GENERAR UN TOKEN D UN LOGEO EXITOSO
 const generateToken = (payload) => {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '10h' }); // token es valido por una hora
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' }); // token es valido por una hora
 }
 // miidlewar para vereficar token en cada peticion
 const verifyToken = (req, res, next) => {

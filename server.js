@@ -9,7 +9,7 @@ app.use(express.json());
 
 //importar rutas
 const authRoutes = require('./routes/auth');
-const tecnicosRoutes = require('./routes/tecnicos');
+const tecnicosRoutes = require('./routes/usuario');
 const serviciosRoutes = require('./routes/servicios');
 const clientesRoutes = require('./routes/clientes');
 const equiposRoutes = require('./routes/equipos');
