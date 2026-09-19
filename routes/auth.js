@@ -4,24 +4,44 @@ const bcrypt = require('bcrypt');
 const db = require('../db');
 const { generateToken } = require('../utils/auth');
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { correo, contrasena } = req.body;
-  db.query('select * from usuario where correo =?' , [correo], async (err, results) => {
-    if (err) throw err;
-    if (results.length == 0) {
-      return res.status(401).json({ message: 'Usuario y contraseña incorrrecta' });
+
+  // 1. Validar que no lleguen datos vacíos
+  if (!correo || !contrasena) {
+    return res.status(400).json({ message: 'Correo y contraseña son obligatorios' });
+  }
+
+  try {
+    // 2. Consulta a la base de datos (db.js exporta pool.promise(), por eso usamos await)
+    const [results] = await db.query('SELECT * FROM usuario WHERE correo = ?', [correo]);
+
+    // 3. Verificar si se encontró el usuario
+    if (results.length === 0) {
+      return res.status(401).json({ message: 'Usuario y contraseña incorrecta' });
     }
+
     const user = results[0];
-    const isPasswordValid = await bcrypt.compare(contrasena, user.contrasena);// usar el nobre y el campo de contrasenia
+
+    // 4. Comparación de contraseña encriptada de forma segura
+    const isPasswordValid = await bcrypt.compare(contrasena, user.contrasena);
+
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Usuario y contraseña incorrrecta' });
+      return res.status(401).json({ message: 'Usuario y contraseña incorrecta' });
     }
-    //muesta el resultado
-    console.log({ id: user.id_usuario, correo: user.correo});
-    console.log('logiago');
-    
-    const token = generateToken({ id: user.id_usuario, correo: user.correo});
-    res.json({ message: 'Logueo exitoso ', token })
-  });
+
+    // 5. Generar token y responder
+    const token = generateToken({ id: user.id_usuario, correo: user.correo });
+
+    return res.json({
+      message: 'Logueo exitoso',
+      token
+    });
+
+  } catch (err) {
+    console.error('Error en el login:', err);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
 });
+
 module.exports = router;

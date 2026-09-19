@@ -104,42 +104,7 @@ router.post('/', verifyToken, async (req, res) => {
 
 
 })
-//METODO PUT
-router.put('/usuario/:id', verifyToken, async (req, res) => {
-    const { id } = req.params;
-    const { pro_email, contrasena ,rol } = req.body;
-     // Validar que vengan los datos necesarios
-    if (!pro_email || !contrasena) {
-        return res.status(400).json({ error: 'El correo y la contraseña son obligatorios' });
-    }
-    try {
-        // 1. PRIMERO: Encriptar la contraseña (¡Esto faltaba!)
-        const hashedPassword = await bcrypt.hash(contrasena, 12);
 
-        // 2. Actualizar la tabla usuario
-        const queryUsuario = `UPDATE usuario SET correo=?, contrasena=?, rol=? WHERE id_usuario=?`;
-        const valuesUsuario = [pro_email, hashedPassword, rol, id];
-        db.query(queryUsuario, valuesUsuario, (errU, resultU) => {
-            if (errU) {
-                console.log(errU);
-                return res.status(500).json({ error: 'Error al actualizar usuario' });
-            }
-            if (resultU.affectedRows === 0) {
-                return res.status(404).json({ message: 'Usuario no encontrado' });
-            }
-
-            // 4. ENVIAR LA ÚNICA RESPUESTA AQUÍ 
-            res.status(200).json({
-                message: 'Usuario actualizado correctamente',
-                id_usuario: id
-            });
-        });
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Error interno al procesar la solicitud' });
-    }
-});
 //METODO PUT
 router.put('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;

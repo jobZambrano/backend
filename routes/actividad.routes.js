@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ActividadModel = require('../models/actividad.model');
-
+// Obtener todas las actividades
 router.get('/', async (req, res) => {
   try {
     const actividades = await ActividadModel.getAll();
@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+// Obtener una actividad por ID
 router.get('/:id', async (req, res) => {
   try {
     const actividad = await ActividadModel.getById(req.params.id);
@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+// Crear una nueva actividad
 router.post('/', async (req, res) => {
   try {
     const { act_nombre } = req.body;
