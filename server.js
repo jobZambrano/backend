@@ -9,6 +9,7 @@ app.use(express.json());
 
 // Importar rutas
 const authRoutes = require("./routes/auth");
+const profesorRoutes = require("./routes/profesor");
 const actividadRoutes = require("./routes/actividad.routes");
 const asignacionRoutes = require("./routes/asignacion.routes");
 const asignacionActividadRoutes = require("./routes/asignacionActividad.routes");
@@ -20,6 +21,7 @@ const demandaRoutes = require("./routes/demanda");
 
 // Usar rutas en Express
 app.use("/api/auth", authRoutes);
+app.use("/api/profesor", profesorRoutes);
 app.use("/api/actividad", actividadRoutes);
 app.use("/api/asignacion", asignacionRoutes);
 app.use("/api/asignacion-actividad", asignacionActividadRoutes);

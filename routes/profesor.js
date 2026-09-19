@@ -5,19 +5,18 @@ const { verifyToken } = require('../utils/auth');
 const bcrypt = require('bcrypt');
 
 // metodo get para registro unico
-router.get('/:id', verifyToken, (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT * FROM PROFESOR WHERE id_profesores =?;';
-    db.query(query, [id], (err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'error al obtener el Docente' });
-        }
+    try {
+        const [results] = await db.query('SELECT * FROM PROFESORES WHERE idprofesores = ?', [id]);
         if (results.length === 0) {
             return res.status(404).json({ error: 'Docente no encontrado' });
         }
         res.json(results[0]);
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'error al obtener el Docente' });
+    }
 });
 
 //metodo get
@@ -74,7 +73,7 @@ router.post('/', verifyToken, async (req, res) => {
     //obtener los datos
     const { idprofesores, pro_apellidosNombres, pro_cedula, pro_email, pro_password, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto } = req.body;
 
-    const search_query = 'SELECT pro_cedula FROM profesores WHERE pro_cedula = ?';
+    const search_query = 'SELECT COUNT(*) as contador FROM profesores WHERE pro_cedula = ?';
     db.query(search_query, [pro_cedula], async (err, result) => {
         if (err) {
             console.log(err);
@@ -112,9 +111,7 @@ router.put('/:id', verifyToken, async (req, res) => {
         pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto } = req.body;
 
     try {
-        // 1. PRIMERO: Encriptar la contraseña (¡Esto faltaba!)
         const hashedPassword = await bcrypt.hash(pro_password, 12);
-
         // 2. Actualizar la tabla profesores
         const query = 'UPDATE profesores SET pro_apellidosNombres=?, pro_cedula=?, pro_email=?, pro_password=?, pro_tipo=?, pro_sexo=?, pro_categoria=?, pro_titulo_tercer=?, pro_titulo_cuarto=?, pro_tipo_cuarto=? WHERE idprofesores=?';
         const values = [pro_apellidosNombres, pro_cedula, pro_email, hashedPassword, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto, id];
@@ -127,6 +124,7 @@ router.put('/:id', verifyToken, async (req, res) => {
             if (result.affectedRows === 0) {
                 return res.status(404).json({ message: 'Docente no encontrado' });
             }
+            res.status(200).json({ message: 'Docente actualizado correctamente' });
         });
 
     } catch (error) {
