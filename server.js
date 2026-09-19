@@ -9,18 +9,19 @@ app.use(express.json());
 
 //importar rutas
 const authRoutes = require('./routes/auth');
-const tecnicosRoutes = require('./routes/usuario');
+const profesorRoutes = require('./routes/profesor');
 const serviciosRoutes = require('./routes/servicios');
 const clientesRoutes = require('./routes/clientes');
 const equiposRoutes = require('./routes/equipos');
 
 // usar las rutas
 app.use('/api/auth', authRoutes);
-app.use('/api/tecnicos', tecnicosRoutes);
+app.use('/api/profesor', profesorRoutes);
 app.use('/api/servicios', serviciosRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/equipos', equiposRoutes);
-//ruta de ejemplo
+//ruta
+//  de ejemplo
 app.get('/', (req, res) => {
     res.send('Hola desde el servidor express');
 });
