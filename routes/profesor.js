@@ -68,12 +68,12 @@ router.get('/', verifyToken, (req, res) => {
     });
 });
 //metodo post registro de docente
-    
-    router.post('/', verifyToken, async (req, res) => {
+
+router.post('/', verifyToken, async (req, res) => {
 
     //obtener los datos
-    const {idprofesores, pro_apellidosNombres, pro_cedula, pro_email, pro_password, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto } = req.body;
-    
+    const { idprofesores, pro_apellidosNombres, pro_cedula, pro_email, pro_password, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto } = req.body;
+
     const search_query = 'SELECT pro_cedula FROM profesores WHERE pro_cedula = ?';
     db.query(search_query, [pro_cedula], async (err, result) => {
         if (err) {
@@ -86,7 +86,7 @@ router.get('/', verifyToken, (req, res) => {
         const query = 'insert into profesores values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         try {
             const claveHasheada = await bcrypt.hash(pro_password, 12);
-            const values = [pro_apellidosNombres, pro_cedula, pro_email, claveHasheada, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto];
+            const values = [idprofesores, pro_apellidosNombres, pro_cedula, pro_email, claveHasheada, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto];
             db.query(query, values, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -98,63 +98,104 @@ router.get('/', verifyToken, (req, res) => {
                 })
             });
         } catch (error) {
-            return res.status(500).json({ error: 'Error al insetar docente' });
+            return res.status(500).json({ error: 'Error interno al procesar la solicitud' });
         }
     })
 
 
 })
 //METODO PUT
+router.put('/usuario/:id', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { pro_email, contrasena ,rol } = req.body;
+     // Validar que vengan los datos necesarios
+    if (!pro_email || !contrasena) {
+        return res.status(400).json({ error: 'El correo y la contraseña son obligatorios' });
+    }
+    try {
+        // 1. PRIMERO: Encriptar la contraseña (¡Esto faltaba!)
+        const hashedPassword = await bcrypt.hash(contrasena, 12);
+
+        // 2. Actualizar la tabla usuario
+        const queryUsuario = `UPDATE usuario SET correo=?, contrasena=?, rol=? WHERE id_usuario=?`;
+        const valuesUsuario = [pro_email, hashedPassword, rol, id];
+        db.query(queryUsuario, valuesUsuario, (errU, resultU) => {
+            if (errU) {
+                console.log(errU);
+                return res.status(500).json({ error: 'Error al actualizar usuario' });
+            }
+            if (resultU.affectedRows === 0) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            // 4. ENVIAR LA ÚNICA RESPUESTA AQUÍ 
+            res.status(200).json({
+                message: 'Usuario actualizado correctamente',
+                id_usuario: id
+            });
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error interno al procesar la solicitud' });
+    }
+});
+//METODO PUT
 router.put('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const { pro_apellidosNombres, pro_cedula, pro_email, pro_password, 
+    const { pro_apellidosNombres, pro_cedula, pro_email, pro_password,
         pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto } = req.body;
-    const query = 'update tecnicos set pro_cedula = ? , nombre_tec = ?, especialidad_tec = ? , telefono_tec = ? where id_tec = ?;';
-    const values = [pro_cedula, nombre_tec, especialidad_tec, telefono_tec, id];
-    db.query(query, values, (err, result) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).json({ error: 'Error al actualizar cliente' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Tecnico no encontrado' })
 
-        }
-        res.status(201).json({
-            message: 'Tecnico actualizado correctamente',
-            id_tec: id
-        })
-    })
+    try {
+        // 1. PRIMERO: Encriptar la contraseña (¡Esto faltaba!)
+        const hashedPassword = await bcrypt.hash(pro_password, 12);
 
+        // 2. Actualizar la tabla profesores
+        const query = 'UPDATE profesores SET pro_apellidosNombres=?, pro_cedula=?, pro_email=?, pro_password=?, pro_tipo=?, pro_sexo=?, pro_categoria=?, pro_titulo_tercer=?, pro_titulo_cuarto=?, pro_tipo_cuarto=? WHERE idprofesores=?';
+        const values = [pro_apellidosNombres, pro_cedula, pro_email, hashedPassword, pro_tipo, pro_sexo, pro_categoria, pro_titulo_tercer, pro_titulo_cuarto, pro_tipo_cuarto, id];
 
-})
+        db.query(query, values, (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ error: 'Error al actualizar docente' });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: 'Docente no encontrado' });
+            }
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error interno al procesar la solicitud' });
+    }
+});
+
 //metodo delete
 router.delete('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const search_query = 'select count(*) as contador from ordenes where id_tec =?;';
+    const search_query = 'select count(*) as Docentes from profesores where idprofesores =?;';
     db.query(search_query, [id], (err, result) => {
         if (err) {
             console.log(err);
-            return res.status(500).json({ error: 'Error interno al verificar tecnicos' });
+            return res.status(500).json({ error: 'Error interno al verificar docentes' });
         }
-        if (result[0].contador > 0) {
-            return res.status(409).json({ message: 'La orden no se puede eliminar esta asociada con tecnicos' })
-
+        if (result[0].Docentes > 0) {
+            return res.status(409).json({ message: 'El docente no se puede eliminar porque está asociado con órdenes' })
         }
-        const query = 'DELETE FROM tecnicos WHERE  id_tec = ?;';
+        const query = 'DELETE FROM profesores WHERE  idprofesores = ?;';
         const values = [id];
         db.query(query, values, (err, result) => {
             if (err) {
                 console.log(err);
-                return res.status(500).json({ error: 'Error al eliminar cliente' });
+                return res.status(500).json({ error: 'Error al eliminar docente' });
             }
             if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'Tecnico no encontrado' })
+                return res.status(404).json({ message: 'Docente no encontrado' })
 
             }
             res.status(200).json({
-                message: 'Tecnico eliminado correctamente',
-                id_tec: id
+                message: 'Docente eliminado correctamente',
+                idprofesor: id
             })
         })
     });
