@@ -1,65 +1,47 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../db");
+const db = require('../db');
+const { verifyToken } = require('../utils/auth');
 
-// --- CONSULTAS (GET) ---
-
-// Obtener totales de carreras, profesores y asignaturas (dashboard.php)
-const getTotales = async () => {
-  const query = `
-    SELECT 
-      (SELECT COUNT(*) FROM carreras) AS Carreras,
-      (SELECT COUNT(*) FROM profesores) AS Profesores,
-      (SELECT COUNT(*) FROM asignaturas) AS Asignaturas
-  `;
-  const [rows] = await db.query(query);
-  return rows[0];
-};
-
-// Obtener últimas 4 asignaturas (dashasignatura.php)
-const getUltimasAsignaturas = async () => {
-  const query = "SELECT * FROM asignaturas ORDER BY idasignaturas DESC LIMIT 4";
-  const [rows] = await db.query(query);
-  return rows;
-};
-
-// Obtener últimas 4 carreras (dashcarrera.php)
-const getUltimasCarreras = async () => {
-  const query = "SELECT * FROM carreras ORDER BY idcarreras DESC LIMIT 4";
-  const [rows] = await db.query(query);
-  return rows;
-};
-
-// --- RUTAS (EXPRESS) ---
-
-// Endpoint: Totales
-router.get("/totales", async (req, res) => {
-  try {
-    const totales = await getTotales();
-    res.json(totales);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+//metodo get para totales (dashboard)
+router.get('/totales', verifyToken, (req, res) => {
+    const query = `
+        SELECT 
+            (SELECT COUNT(*) FROM carreras) AS Carreras,
+            (SELECT COUNT(*) FROM profesores) AS Profesores,
+            (SELECT COUNT(*) FROM asignaturas) AS Asignaturas
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Error al obtener los totales' });
+        }
+        res.json(results[0]);
+    });
 });
 
-// Endpoint: Últimas asignaturas
-router.get("/asignaturas", async (req, res) => {
-  try {
-    const asignaturas = await getUltimasAsignaturas();
-    res.json(asignaturas);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+//metodo get para las ultimas asignaturas (dashboard)
+router.get('/asignaturas', verifyToken, (req, res) => {
+    const query = 'SELECT * FROM asignaturas ORDER BY idasignaturas DESC LIMIT 4';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Error al obtener las ultimas asignaturas' });
+        }
+        res.json(results);
+    });
 });
 
-// Endpoint: Últimas carreras
-router.get("/carreras", async (req, res) => {
-  try {
-    const carreras = await getUltimasCarreras();
-    res.json(carreras);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+//metodo get para las ultimas carreras (dashboard)
+router.get('/carreras', verifyToken, (req, res) => {
+    const query = 'SELECT * FROM carreras ORDER BY idcarreras DESC LIMIT 4';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Error al obtener las ultimas carreras' });
+        }
+        res.json(results);
+    });
 });
 
 module.exports = router;
