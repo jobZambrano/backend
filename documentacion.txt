@@ -3,8 +3,8 @@ url: http://localhost:5000/api/auth
 
 Datos JSON:
 {
-    "username": "valor",
-    "password": "valor"
+    "pro_email": "valor",
+    "pro_password": "valor"
 }
 
 REQUIERE ENVIAR EL TOKEN EN EL HEADERS DE LAS PETICIONES
@@ -12,28 +12,38 @@ Clave: Authorization
 Valor: Bearer token 
 
 METODO GET (MULTLIPLES REGISTROS)
-url: http://localhost:5000/api/tecnicos?page=1&cadena=valor
+url: http://localhost:5000/api/profesor?page=1&cadena=valor
 
 METODO GET (REGISTROS UNICOS)
-url: http://localhost:5000/api/tecnicos/ID
+url: http://localhost:5000/api/profesor/ID
 
-Metodo POST
-url:http://localhost:5000/api/tecnicos
+Metodo POST "crear"
+url:http://localhost:5000/api/profesor
 Datos JSON:
 {
-    "usuario_tec": "",
-    "nombre_tec": "",
-    "especialidad_tec": "",
-    "telefono_tec": "",
-    "contrasenia_tec": ""
+    "pro_apellidosNombres": "",
+    "pro_cedula": "",
+    "pro_email": "",
+    "pro_password": "",
+    "pro_tipo": "",
+    "pro_categoria": "",
+    "pro_titulo_tercer": "",
+    "pro_titulo_cuarto": "",
+    "pro_tipo_cuarto": "",
+    "rol": ""
 }
 METODO PUT 
 url:http://localhost:5000/api/tecnicos/ID
 {
-    "usuario_tec": "",
-    "nombre_tec": "",
-    "especialidad_tec": "",
-    "telefono_tec": ""
+    "pro_apellidosNombres": "",
+    "pro_cedula": "",
+    "pro_email": "",
+    "pro_tipo": "",
+    "pro_categoria": "",
+    "pro_titulo_tercer": "",
+    "pro_titulo_cuarto": "",
+    "pro_tipo_cuarto": "",
+    "rol": ""
 }
 METODO delete
 url:http://localhost:5000/api/tecnicos/ID
