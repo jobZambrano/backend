@@ -10,12 +10,12 @@ app.use(express.json());
 // Importar rutas
 const authRoutes = require("./routes/auth");
 const profesorRoutes = require("./routes/profesor");
-const actividadRoutes = require("./routes/actividad.routes");
-const asignacionRoutes = require("./routes/asignacion.routes");
-const asignacionActividadRoutes = require("./routes/asignacionActividad.routes");
-const asignaturaRoutes = require("./routes/asignatura.routes");
-const carreraRoutes = require("./routes/carrera.routes");
-const coordinadorRoutes = require("./routes/coordinador.routes");
+const actividadRoutes = require("./routes/actividad");
+const asignacionRoutes = require("./routes/asignacion");
+const asignacionActividadRoutes = require("./routes/asignacionActividad");
+const asignaturaRoutes = require("./routes/asignaturas");
+const carreraRoutes = require("./routes/carreras");
+const coordinadorRoutes = require("./routes/coordinadores");
 const dashboardRoutes = require("./routes/dashboard");
 const demandaRoutes = require("./routes/demanda");
 
