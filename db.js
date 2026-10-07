@@ -13,3 +13,5 @@ const pool = mysql.createPool({
 
 // Exporta la versión con soporte para Promesas (async / await)
 module.exports = pool.promise();
+
+

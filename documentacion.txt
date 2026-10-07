@@ -15,7 +15,7 @@ METODO GET (MULTLIPLES REGISTROS)
 url: http://localhost:5000/api/profesor?page=1&cadena=valor
 
 METODO GET (REGISTROS UNICOS)
-url: http://localhost:5000/api/profesor/ID
+url: http://localhost:5000/api/profesor/ID=valor
 
 Metodo POST "crear"
 url:http://localhost:5000/api/profesor
@@ -26,24 +26,25 @@ Datos JSON:
     "pro_email": "",
     "pro_password": "",
     "pro_tipo": "",
+    "pro_sexo": "",
     "pro_categoria": "",
     "pro_titulo_tercer": "",
     "pro_titulo_cuarto": "",
-    "pro_tipo_cuarto": "",
-    "rol": ""
+    "pro_tipo_cuarto": ""
 }
 METODO PUT 
-url:http://localhost:5000/api/tecnicos/ID
+url:http://localhost:5000/api/profesor/ID=valor
 {
     "pro_apellidosNombres": "",
     "pro_cedula": "",
     "pro_email": "",
+    "pro_password": "",
     "pro_tipo": "",
+    "pro_sexo": "",
     "pro_categoria": "",
     "pro_titulo_tercer": "",
     "pro_titulo_cuarto": "",
-    "pro_tipo_cuarto": "",
-    "rol": ""
+    "pro_tipo_cuarto": ""
 }
 METODO delete
-url:http://localhost:5000/api/tecnicos/ID
+url:http://localhost:5000/api/profesor/ID=valor
