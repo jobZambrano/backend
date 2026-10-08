@@ -1,50 +1,382 @@
-AUTENTICACION
-url: http://localhost:5000/api/auth
+================================================================================
+                    DOCUMENTACIÓN DE LA API - SISTEMA ACADÉMICO
+================================================================================
 
-Datos JSON:
-{
-    "pro_email": "valor",
-    "pro_password": "valor"
-}
+INFORMACIÓN GENERAL
+-------------------
+Base URL:         http://localhost:5000/api
+Autenticación:    JWT (Bearer Token)
+Formato:          JSON
+Header requerido: Authorization: Bearer <token>
 
-REQUIERE ENVIAR EL TOKEN EN EL HEADERS DE LAS PETICIONES
-Clave: Authorization
-Valor: Bearer token 
+Todas las rutas excepto /auth/login requieren token JWT.
+El token se obtiene haciendo login y se envía en el header Authorization.
 
-METODO GET (MULTLIPLES REGISTROS)
-url: http://localhost:5000/api/profesor?page=1&cadena=valor
 
-METODO GET (REGISTROS UNICOS)
-url: http://localhost:5000/api/profesor/ID=valor
+================================================================================
+                            AUTENTICACIÓN (/auth)
+================================================================================
 
-Metodo POST "crear"
-url:http://localhost:5000/api/profesor
-Datos JSON:
-{
-    "pro_apellidosNombres": "",
-    "pro_cedula": "",
-    "pro_email": "",
-    "pro_password": "",
-    "pro_tipo": "",
-    "pro_sexo": "",
-    "pro_categoria": "",
-    "pro_titulo_tercer": "",
-    "pro_titulo_cuarto": "",
-    "pro_tipo_cuarto": ""
-}
-METODO PUT 
-url:http://localhost:5000/api/profesor/ID=valor
-{
-    "pro_apellidosNombres": "",
-    "pro_cedula": "",
-    "pro_email": "",
-    "pro_password": "",
-    "pro_tipo": "",
-    "pro_sexo": "",
-    "pro_categoria": "",
-    "pro_titulo_tercer": "",
-    "pro_titulo_cuarto": "",
-    "pro_tipo_cuarto": ""
-}
-METODO delete
-url:http://localhost:5000/api/profesor/ID=valor
+1. LOGIN
+   Método: POST
+   URL:    /api/auth/login
+   Body:
+   {
+       "pro_email": "correo@ejemplo.com",
+       "pro_password": "tu_password"
+   }
+   Respuesta (200):
+   {
+       "message": "Logueo exitoso",
+       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   }
+
+
+================================================================================
+                            ACTIVIDADES (/actividad)
+================================================================================
+
+1. OBTENER TODAS LAS ACTIVIDADES
+   Método: GET
+   URL:    /api/actividad?page=1&limit=10&cadena=busqueda
+   Respuesta (200):
+   {
+       "totalItems": 10,
+       "totalPages": 1,
+       "currentPage": 1,
+       "limit": 10,
+       "data": [ { "idactividad": 1, "act_nombre": "Docencia" } ]
+   }
+
+2. OBTENER ACTIVIDAD POR ID
+   Método: GET
+   URL:    /api/actividad/:id
+
+3. CREAR ACTIVIDAD
+   Método: POST
+   URL:    /api/actividad
+   Body:
+   { "act_nombre": "Investigación" }
+
+4. ACTUALIZAR ACTIVIDAD
+   Método: PUT
+   URL:    /api/actividad/:id
+   Body:
+   { "act_nombre": "Investigación Científica" }
+
+5. ELIMINAR ACTIVIDAD
+   Método: DELETE
+   URL:    /api/actividad/:id
+
+
+================================================================================
+                            PROFESORES (/profesores)
+================================================================================
+
+1. OBTENER TODOS LOS PROFESORES
+   Método: GET
+   URL:    /api/profesores?page=1&limit=10&cadena=busqueda
+
+2. OBTENER PROFESOR POR ID
+   Método: GET
+   URL:    /api/profesores/:id
+
+3. CREAR PROFESOR
+   Método: POST
+   URL:    /api/profesores
+   Body:
+   {
+       "pro_apellidosNombres": "Juan Pérez",
+       "pro_cedula": "1234567890",
+       "pro_email": "juan@ejemplo.com",
+       "pro_password": "password123",
+       "pro_tipo": "NOMBRAMIENTO",
+       "pro_sexo": "M",
+       "pro_categoria": "TITULAR AUXILIAR 1",
+       "pro_titulo_tercer": "Ingeniero en Sistemas",
+       "pro_titulo_cuarto": "Magíster en TI",
+       "pro_tipo_cuarto": "MAESTRIA"
+   }
+
+4. ACTUALIZAR PROFESOR
+   Método: PUT
+   URL:    /api/profesores/:id
+
+5. ELIMINAR PROFESOR
+   Método: DELETE
+   URL:    /api/profesores/:id
+
+
+================================================================================
+                            PERIODOS (/periodo)
+================================================================================
+
+1. OBTENER TODOS LOS PERIODOS
+   Método: GET
+   URL:    /api/periodo?page=1&limit=10&cadena=busqueda
+
+2. OBTENER PERIODO POR ID
+   Método: GET
+   URL:    /api/periodo/:id
+
+3. CREAR PERIODO
+   Método: POST
+   URL:    /api/periodo
+   Body:
+   {
+       "per_nombre": "2024-2025",
+       "per_activa": 1,
+       "per_mostrar": 1
+   }
+
+4. ACTUALIZAR PERIODO
+   Método: PUT
+   URL:    /api/periodo/:id
+
+5. ELIMINAR PERIODO
+   Método: DELETE
+   URL:    /api/periodo/:id
+
+
+================================================================================
+                            DEMANDAS (/demanda)
+================================================================================
+
+1. OBTENER TODAS LAS DEMANDAS
+   Método: GET
+   URL:    /api/demanda?page=1&limit=10&cadena=busqueda
+
+2. OBTENER DEMANDA POR ID
+   Método: GET
+   URL:    /api/demanda/:id
+
+3. CREAR DEMANDA
+   Método: POST
+   URL:    /api/demanda
+   Body:
+   {
+       "carreras_idcarreras": 1,
+       "periodos_idperiodos": 1,
+       "asignaturas_idasignaturas": 1,
+       "dem_nivel": "PRIMERO",
+       "dem_num_hor_clase": 4,
+       "dem_num_estudiantes": 30,
+       "dem_num_paralelos": 2
+   }
+
+4. ACTUALIZAR DEMANDA
+   Método: PUT
+   URL:    /api/demanda/:id
+
+5. ELIMINAR DEMANDA
+   Método: DELETE
+   URL:    /api/demanda/:id
+
+
+================================================================================
+                            DASHBOARD (/dashboard)
+================================================================================
+
+1. OBTENER TOTALES
+   Método: GET
+   URL:    /api/dashboard/totales
+   Respuesta:
+   {
+       "Carreras": 5,
+       "Profesores": 20,
+       "Asignaturas": 50
+   }
+
+2. OBTENER ÚLTIMAS ASIGNATURAS
+   Método: GET
+   URL:    /api/dashboard/asignaturas
+
+3. OBTENER ÚLTIMAS CARRERAS
+   Método: GET
+   URL:    /api/dashboard/carreras
+
+
+================================================================================
+                            COORDINADORES (/coordinadores)
+================================================================================
+
+1. OBTENER TODOS LOS COORDINADORES
+   Método: GET
+   URL:    /api/coordinadores?page=1&limit=10&cadena=busqueda
+
+2. OBTENER COORDINADOR POR ID
+   Método: GET
+   URL:    /api/coordinadores/:id
+
+3. CREAR COORDINADOR
+   Método: POST
+   URL:    /api/coordinadores
+   Body:
+   {
+       "profesores_idprofesores": 1,
+       "carreras_idcarreras": 1,
+       "coo_rol": "COORDINADOR"
+   }
+   Valores permitidos para coo_rol: COORDINADOR, COMISION ACADEMICA
+
+4. ACTUALIZAR COORDINADOR
+   Método: PUT
+   URL:    /api/coordinadores/:id
+
+5. ELIMINAR COORDINADOR
+   Método: DELETE
+   URL:    /api/coordinadores/:id
+
+
+================================================================================
+                            CARRERAS (/carreras)
+================================================================================
+
+1. OBTENER TODAS LAS CARRERAS
+   Método: GET
+   URL:    /api/carreras?page=1&limit=10&cadena=busqueda
+
+2. OBTENER CARRERA POR ID
+   Método: GET
+   URL:    /api/carreras/:id
+
+3. CREAR CARRERA
+   Método: POST
+   URL:    /api/carreras
+   Body:
+   {
+       "car_nombre": "Ingeniería en Sistemas",
+       "car_alias": "IS"
+   }
+
+4. ACTUALIZAR CARRERA
+   Método: PUT
+   URL:    /api/carreras/:id
+
+5. ELIMINAR CARRERA
+   Método: DELETE
+   URL:    /api/carreras/:id
+
+
+================================================================================
+                            ASIGNATURAS (/asignaturas)
+================================================================================
+
+1. OBTENER TODAS LAS ASIGNATURAS
+   Método: GET
+   URL:    /api/asignaturas?page=1&limit=10&cadena=busqueda
+
+2. OBTENER ASIGNATURA POR ID
+   Método: GET
+   URL:    /api/asignaturas/:id
+
+3. CREAR ASIGNATURA
+   Método: POST
+   URL:    /api/asignaturas
+   Body:
+   {
+       "asi_nombres": "Programación I",
+       "carreras_idcarreras": 1,
+       "asi_activa": 1
+   }
+
+4. ACTUALIZAR ASIGNATURA
+   Método: PUT
+   URL:    /api/asignaturas/:id
+
+5. ELIMINAR ASIGNATURA
+   Método: DELETE
+   URL:    /api/asignaturas/:id
+
+
+================================================================================
+                    ASIGNACIÓN ACTIVIDAD (/asignacion-actividad)
+================================================================================
+
+1. OBTENER TODAS LAS ASIGNACIONES
+   Método: GET
+   URL:    /api/asignacion-actividad?page=1&limit=10&cadena=busqueda
+
+2. OBTENER ASIGNACIÓN POR ID
+   Método: GET
+   URL:    /api/asignacion-actividad/:id
+
+3. CREAR ASIGNACIÓN
+   Método: POST
+   URL:    /api/asignacion-actividad
+   Body:
+   {
+       "periodos_idperiodos": 1,
+       "actividad_idactividad": 1,
+       "profesores_idprofesores": 1,
+       "act_num_horas": 10
+   }
+
+4. ACTUALIZAR ASIGNACIÓN
+   Método: PUT
+   URL:    /api/asignacion-actividad/:id
+
+5. ELIMINAR ASIGNACIÓN
+   Método: DELETE
+   URL:    /api/asignacion-actividad/:id
+
+
+================================================================================
+                            ASIGNACIÓN (/asignacion)
+================================================================================
+
+1. OBTENER TODAS LAS ASIGNACIONES
+   Método: GET
+   URL:    /api/asignacion?page=1&limit=10&cadena=busqueda
+
+2. OBTENER ASIGNACIÓN POR ID
+   Método: GET
+   URL:    /api/asignacion/:id
+
+3. CREAR ASIGNACIÓN
+   Método: POST
+   URL:    /api/asignacion
+   Body:
+   {
+       "profesores_idprofesores": 1,
+       "demanda_iddemanda": 1,
+       "asi_num_horas": 4
+   }
+
+4. ACTUALIZAR ASIGNACIÓN
+   Método: PUT
+   URL:    /api/asignacion/:id
+
+5. ELIMINAR ASIGNACIÓN
+   Método: DELETE
+   URL:    /api/asignacion/:id
+
+
+================================================================================
+                            CÓDIGOS DE ESTADO HTTP
+================================================================================
+
+200 - OK                    : Operación exitosa
+201 - Created               : Recurso creado
+400 - Bad Request           : Datos inválidos
+401 - Unauthorized          : Token inválido o expirado
+404 - Not Found             : Recurso no encontrado
+409 - Conflict              : Recurso duplicado o con dependencias
+500 - Internal Server Error : Error del servidor
+
+
+================================================================================
+                            NOTAS IMPORTANTES
+================================================================================
+
+1. Todas las rutas excepto /auth/login requieren token JWT.
+2. El token se obtiene haciendo login y se envía en el header
+   Authorization: Bearer <token>.
+3. Los parámetros page, limit y cadena son opcionales en las rutas de listado.
+4. Los valores de los ENUM (como coo_rol, pro_tipo, pro_categoria) deben
+   coincidir exactamente con los definidos en la base de datos.
+
+
+================================================================================
+                                FIN DEL DOCUMENTO
+================================================================================

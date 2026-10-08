@@ -7,29 +7,18 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Importar rutas
-const authRoutes = require("./routes/auth");
-const profesorRoutes = require("./routes/profesor");
-const actividadRoutes = require("./routes/actividad");
-const asignacionRoutes = require("./routes/asignacion");
-const asignacionActividadRoutes = require("./routes/asignacionActividad");
-const asignaturaRoutes = require("./routes/asignaturas");
-const carreraRoutes = require("./routes/carreras");
-const coordinadorRoutes = require("./routes/coordinadores");
-const dashboardRoutes = require("./routes/dashboard");
-const demandaRoutes = require("./routes/demanda");
+app.use('/api/actividad', require('./routes/actividad'));
+app.use('/api/asignacion', require('./routes/asignacion'));
+app.use('/api/asignacionActividad', require('./routes/asignacionActividad'));
+app.use('/api/asignaturas', require('./routes/asignaturas'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/carreras', require('./routes/carreras'));
+app.use('/api/coordinadores', require('./routes/coordinadores'));
+app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/demanda', require('./routes/demanda'));
+app.use('/api/periodo', require('./routes/periodo'));
+app.use('/api/profesor', require('./routes/profesor'));
 
-// Usar rutas en Express
-app.use("/api/auth", authRoutes);
-app.use("/api/profesor", profesorRoutes);
-app.use("/api/actividad", actividadRoutes);
-app.use("/api/asignacion", asignacionRoutes);
-app.use("/api/asignacion-actividad", asignacionActividadRoutes);
-app.use("/api/asignatura", asignaturaRoutes);
-app.use("/api/carrera", carreraRoutes);
-app.use("/api/coordinador", coordinadorRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/demanda", demandaRoutes);
 //ruta de ejemplo
 app.get("/", (req, res) => {
   res.send("Hola desde el servidor express");
