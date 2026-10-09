@@ -22,8 +22,14 @@ const CarreraModel = {
         const totalPages = Math.ceil(totalCarreras / limit);
 
         const queryParamsPaginados = [...queryParams, limit, offset];
-        const [carrerasResult] = await db.query(`SELECT * FROM carreras ${whereClause} LIMIT ? OFFSET ?`, queryParamsPaginados);
-
+        const [carrerasResult] = await db.query(`
+    SELECT c.*, COUNT(a.idasignaturas) AS total_asignaturas
+    FROM carreras c
+    LEFT JOIN asignaturas a ON a.carreras_idcarreras = c.idcarreras
+    ${whereClause ? whereClause.replace('car_nombre', 'c.car_nombre').replace('car_alias', 'c.car_alias') : ''}
+    GROUP BY c.idcarreras
+    LIMIT ? OFFSET ?
+`, queryParamsPaginados);
         return {
             totalItems: totalCarreras,
             totalPages: totalPages,

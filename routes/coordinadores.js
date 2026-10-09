@@ -4,6 +4,7 @@ const CoordinadorController = require('../controllers/coordinadorController');
 const { verifyToken } = require('../utils/auth');
 
 // Rutas
+router.get('/profesor/:id', verifyToken, CoordinadorController.getByProfesor);
 router.get('/:id', verifyToken, CoordinadorController.getById);
 router.get('/', verifyToken, CoordinadorController.getAll);
 router.post('/', verifyToken, CoordinadorController.create);

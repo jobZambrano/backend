@@ -13,7 +13,17 @@ const CoordinadorController = {
             res.status(500).json({ error: 'Error al obtener el coordinador' });
         }
     },
-
+    // GET /profesor/:id
+    getByProfesor: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const coordinaciones = await CoordinadorModel.getByProfesor(id);
+            res.json({ data: coordinaciones });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Error al obtener coordinaciones del profesor' });
+        }
+    },
     // GET /
     getAll: async (req, res) => {
         try {

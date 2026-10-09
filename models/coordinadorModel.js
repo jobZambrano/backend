@@ -1,12 +1,22 @@
 const db = require('../db');
 
 const CoordinadorModel = {
+
     // Obtener un coordinador por ID
     getById: async (id) => {
         const [results] = await db.query('SELECT * FROM coordinadores WHERE idcoordinadores = ?', [id]);
         return results[0];
     },
-
+    // Obtener coordinaciones por profesor (con JOIN a carreras)
+    getByProfesor: async (idProfesor) => {
+        const [results] = await db.query(`
+        SELECT co.*, c.car_nombre, p.pro_apellidosNombres
+        FROM coordinadores co
+        JOIN carreras c ON co.carreras_idcarreras = c.idcarreras
+        JOIN profesores p ON co.profesores_idprofesores = p.idprofesores
+        WHERE co.profesores_idprofesores = ?`, [idProfesor]);
+        return results;
+    },
     // Obtener todos los coordinadores con paginación y búsqueda (con JOINs)
     getAll: async (limit, offset, cadena) => {
         let whereClause = '';
@@ -78,6 +88,7 @@ const CoordinadorModel = {
         const [result] = await db.query('DELETE FROM coordinadores WHERE idcoordinadores = ?', [id]);
         return result.affectedRows > 0;
     }
+
 };
 
 module.exports = CoordinadorModel;

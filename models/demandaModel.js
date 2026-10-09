@@ -13,21 +13,30 @@ const DemandaModel = {
         let queryParams = [];
 
         if (cadena) {
-            whereClause = 'WHERE dem_nivel LIKE ?';
+            whereClause = 'WHERE d.dem_nivel LIKE ? OR c.car_nombre LIKE ? OR p.per_nombre LIKE ? OR a.asi_nombres LIKE ?';
             queryParams.push(`%${cadena}%`);
+            queryParams.push(term, term, term, term);
         }
 
-        const [countResult] = await db.query(`SELECT COUNT(*) as total FROM demanda ${whereClause}`, queryParams);
+        const [countResult] = await db.query(countQuery, queryParams);
         const totalDemandas = countResult[0].total;
         const totalPages = Math.ceil(totalDemandas / limit);
 
+        const query = `
+        SELECT d.*, c.car_nombre, p.per_nombre, a.asi_nombres
+        FROM demanda d
+        JOIN carreras c ON d.carreras_idcarreras = c.idcarreras
+        JOIN periodos p ON d.periodos_idperiodos = p.idperiodos
+        JOIN asignaturas a ON d.asignaturas_idasignaturas = a.idasignaturas
+        ${whereClause}
+        LIMIT ? OFFSET ?`;
         const queryParamsPaginados = [...queryParams, limit, offset];
-        const [demandasResult] = await db.query(`SELECT * FROM demanda ${whereClause} LIMIT ? OFFSET ?`, queryParamsPaginados);
+        const [results] = await db.query(query, queryParamsPaginados);
 
         return {
             totalItems: totalDemandas,
             totalPages: totalPages,
-            data: demandasResult
+            data: results
         };
     },
 

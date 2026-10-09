@@ -1,10 +1,13 @@
 const express = require("express");
 const cors = require("cors");
+const { renovarToken } = require("./utils/auth");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
+// Middleware para renovar el token en cada respuesta exitosa
+app.use(renovarToken);
 app.use(express.json());
 
 app.use('/api/actividad', require('./routes/actividad'));
